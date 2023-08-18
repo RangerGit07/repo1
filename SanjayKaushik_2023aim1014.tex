@@ -1,0 +1,154 @@
+\documentclass[a0,portrait ] {article}
+\usepackage [top=2.5cm, bottom=2.5cm, left=3cm, right=3cm]{geometry}
+\usepackage{multicol}
+
+
+
+
+\begin{document}
+\begin{center}
+
+%\begin{minipage}[t]{1.3\linewidth}
+\centering \large \textbf{Joint Optimization of Trajectory Planning and Task Scheduling in \\ Heterogeneous Multi-UAV System \\}
+\vspace{1cm}
+\centering \textbf{ Sanjay Kaushik 2023aim1014\\}
+%\end{minipage}
+\end{center}
+\\
+\begin{multicols}{2}
+\vspace{1cm}
+\section*{Abstract} \label{sec:1}
+%\vspace{1cm}
+The use of unmanned aerial vehicles (UAV) as a new sensing paradigm is emerging for surveillance and tracking applications, especially in the infrastructure-less environment. One such application of UAVs is in the construction industry where currently prevalent manual progress tracking results in schedule delays and cost overruns. In this paper, we develop a heterogeneous multi-UAV frame work for progress tracking of large construction sites. The proposed framework consists of \emph{Edge\_UAV} which coordinates the data relay of the visual sensor-equipped Inspection UAVs (I UAVs) to the cloud. Our framework jointly takes into consideration the trajectory optimization of the Edge UAV and the stability of system queues. In particular, we develop a Distance and Access Latency Aware Trajectory (DLAT) optimization that generates a fair ac cess schedule for I UAV s. In addition, a Lyapunov based online optimization ensures the system stability of the average queue backlogs for data offloading tasks. Through a message based mechanism, the coordination between the set of I UAVs and Edge UAV is ensured without any dependence on any central entity or message broadcasts. The performance of our proposed framework with joint optimization algorithm is validated by extensive simulation results in different parameter settings.\\
+\hspace{1cm} \textbf{Keyword}: Path Planning, Task Scheduling, Data Of floading, Construction Site Monitoring, Unmanned Aerial Vehicles (UAVs), Lyapunov Optimization
+
+
+\section{Introduction} \label{sec:2}
+The unmanned aerial vehicle (UAV) based solutions are
+ emerging in various domains such as wireless sensing [1],
+ payload delivery [2], precision agriculture [3], help and
+ rescue operations [4], etc. Moreover, with the current
+ trend of automation, sensing and information exchange
+ in Industry 4.0, UAV based applications are also finding
+ their place in the construction industry especially for re
+source tracking and progress monitoring using aerial im
+agery. Such solutions are helpful in infrastructure-less
+ large construction sites as they provide ease of deploy
+ment, quick access to the ground-truth data and higher
+ reachability and coverage [5]. Further, the autonomous
+ or semi-autonomous UAV based solutions could facilitate
+ progress monitoring, building inspections (for cracks or
+ other defects), safety inspections (to find any environ
+mental hazards) and many more construction-specific au
+dits automatically. The UAV based visual monitoring of
+ under-construction projects also allows simultaneous ob
+servability of ground-truth data by different collaborating
+ entities. Availability of such data and information helps
+ in timely assessments that could reduce schedule delays,
+ cost overruns, resource wastage and financial losses which
+ are not uncommon in construction projects.
+ A plausible solution to address the aforementioned
+ challenges could be a Mobile Edge Computing (MEC)
+ [6] based heterogeneous multi-UAV framework. Such a
+ framework along with the prior geometric knowledge avail
+able about the construction site as gathered from a Build
+ing Information Model (BIM)[7] could help create an ef
+fective multi-UAV based visual monitoring system for con
+struction sites. As for any constrained environment, the
+ optimization of computational resources is central to de
+velop a solution. The integration of UAVs and MEC into
+ a single framework could facilitate that with efficient data
+ collection/processing from the UAV based dynamic sen
+sors in infrastructure-less environments [8]. In addition,
+ an MEC based framework can help to perform partial
+ computation offloading wherein a part of data is processed
+ by the UAVs while the rest gets offloaded to the cloud.
+ An MECbased UAV framework is not new and the de
+ployment of the UAVs as base stations or edge servers
+ is widely studied [9, 10]. These studies reflect on the f
+ lexibility in deployment of UAV based edge computing
+ components. However, there is a problem of buffer over
+f
+ low of UAVs due to the limited on-board processing and
+ the shared bandwidth to transfer data to the cloud which
+ leads to instability in the system. In addition, the dy
+namic nature of such systems with varying data traffic
+ and continuous movement of UAVs makes it difficult to
+ stabilize or control the system in a deterministic man
+ner. Researchers have used online Lyapunov optimization
+ [11] to address such system instabilities. Lyapunov opti
+mization considers the stability of the system with time
+ varying data and optimizes time averages of system utility
+ and queue backlogs.
+ In this paper, we address the challenges of deploying
+ a heterogeneous multi-UAV system for construction site
+ monitoring by the joint optimization of UAV trajectory
+ planning and data offloading task scheduling. The pro
+posed framework employs two types of UAVs viz. Inspec
+tion UAVs I UAVsandMobileEdgeUAVs\emph{(Edge\_UAV)}.
+ While the former is deployed as visual sensors to collect
+ visual data from different locations of the site, the latter
+ interacts and collects data from I UAV s, and offloads the
+ same to the cloud. The core objective of the framework
+ is to minimize the total energy consumption of the sys
+tem while considering the data queue backlogs of I UAV s
+ and Edge UAV and also jointly optimizing the trajectory
+ of the Edge UAV in accordance with the trajectories of
+ I UAVs having minimum access latency and travel dis
+tance. The online resource management such as transmis
+sion power and processor frequency of the Edge UAV is
+ evolved using Lyapunov optimization (as in [12]).
+ The rest of the paper is organised as follows: Section
+ 2 presents the proposed heterogeneous multi-UAV frame
+work for construction site monitoring. The overall system
+ objective is discussed in Sections 3. Sections 4 and 5 dis
+cuss the trajectory optimization and Lyapunov based sys
+tem stability, respectively. The simulation setup has been
+ presented in Section 6. Section 7 discusses the results
+ gathered from the experiments while Section 8 concludes
+ the paper.
+
+ \section{Heterogeneous Multi-UAV Frame work} \label{sec:3}
+ Figure ?? depicts the overall multi-UAV framework with
+ all its components. The system consists of two hetero
+geneous UAVs i.e. a set of Inspection UAVs I UAV =
+ {I UAV1,I UAV2,I UAV3,.....,I UAVN} and a Mobile
+ Edge UAV (Edge UAV). I UAVs are smaller in size and
+ are more agile. They collect visual data from a set of
+ Point of Interests (PoIs) denoted as L = {l1,l2,l3....lk}
+ across the construction site. As the construction sites are
+ infrastructure-less environments, there are limited Access
+ Points (AP) available for connectivity to the cloud. Fur
+ther, the I UAVs possess limited connectivity range that
+ makes it difficult for them to transfer data to cloud di
+rectly. In addition, the I UAV s move in the 3D Cartesian
+ coordinate system. The Edge UAV, which is larger in size
+ and possesses higher computational capabilities, coordi
+nates with the I UAVs to relay the data (after partially
+ processing the same) to the cloud. Edge UAV always
+ maintains a constant height and thus its trajectory lies in
+ an horizontal plane.
+
+
+\cite{mozaffari2019tutorial}
+\cite{ruggiero2018aerial}
+\cite{boursianis2020internet}
+\cite{waharte2010supporting}
+\cite{hamledari2018uav}
+\cite{mao2017survey}
+\cite{golparvar2011integrated}
+\cite{nguyen2020towards}
+\cite{wan2019towards}
+\cite{abbas2017mobile}
+\cite{neely2010stochastic}
+\cite{zhang2018stochastic}
+\cite{al2014optimal}
+\cite{lu2018beyond}
+\cite{MichelNeeley2018}
+\cite{}
+\bibliographystyle{acm}
+\bibliography{bibs}
+
+\end{multicols}
+
+ \end{document}
